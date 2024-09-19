@@ -11,11 +11,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  // @ts-ignore
+  origin: function (origin, callback) {
+    const allowedOrigins = [process.env.CORS_ORIGIN, 'https://todoo-frontend-rjd2.vercel.app'];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
-
 
 app.use(cors(corsOptions));
 app.use(express.json());
